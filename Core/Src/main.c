@@ -97,7 +97,7 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-
+ uint32_t Delay_State = 0 ;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -108,6 +108,12 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	  BottonMatrixUpdate() ;
+	  if(HAL_GetTick() - Delay_State >= 70)
+	  {
+		  Delay_State = HAL_GetTick() ;
+		  State_CheckID_ () ;
+		  ButtonMatrixState = 0;
+	  }
   }
   /* USER CODE END 3 */
 }
@@ -270,7 +276,7 @@ uint16_t ButtonMatrixPin[8] = {GPIO_PIN_10,GPIO_PIN_3,GPIO_PIN_5,GPIO_PIN_4,GPIO
 uint8_t ButtonMatrixRow = 0 ;    //what R now
 void BottonMatrixUpdate()
 {
-	if(HAL_GetTick() - ButtonMatrixTimeStamp >= 100)
+	if(HAL_GetTick() - ButtonMatrixTimeStamp >= 70)
 	{
 		ButtonMatrixTimeStamp = HAL_GetTick() ;
 		int i ;
@@ -298,6 +304,7 @@ void BottonMatrixUpdate()
 
 }
 uint8_t STATE_Display = 0 ;
+int u = 0 ;
 void State_CheckID_ ()
 {
 	switch (STATE_Display) {
@@ -307,6 +314,7 @@ void State_CheckID_ ()
 			case 0x0 :
 				break ;
 			case 0x40 :  // กด 6 ตัว 1
+				ButtonMatrixState = 0;
 				STATE_Display = State_1_no6  ;
 				break ;
 			case 0x8 :
@@ -314,6 +322,10 @@ void State_CheckID_ ()
 				break ;
 			case 0x80 :
 				STATE_Display = State_start ;
+				break ;
+			default :
+				if(ButtonMatrixState == 0x8)
+				{STATE_Display = State_start ;}
 				break ;
 			}
 		break;
@@ -323,6 +335,7 @@ void State_CheckID_ ()
 			case 0x0 :
 				break ;
 			case 0x200 :  // กด 2 ตัว 2
+				ButtonMatrixState = 0;
 				STATE_Display = State_2_no2  ;
 				break ;
 			case 0x8 :
@@ -330,6 +343,10 @@ void State_CheckID_ ()
 				break ;
 			case 0x80 :
 				STATE_Display = State_start ;
+				break ;
+			default :
+				if(ButtonMatrixState == 0x8)
+				{STATE_Display = State_start ;}
 				break ;
 			}
 		break;
@@ -339,6 +356,7 @@ void State_CheckID_ ()
 			case 0x0 :
 				break ;
 			case 0x400 :  // กด 3 ตัว 3
+				ButtonMatrixState = 0;
 				STATE_Display = State_3_no3  ;
 				break ;
 			case 0x8 :
@@ -346,6 +364,10 @@ void State_CheckID_ ()
 				break ;
 			case 0x80 :
 				STATE_Display = State_1_no6 ;
+				break ;
+			default :
+				if(ButtonMatrixState == 0x8)
+				{STATE_Display = State_start ;}
 				break ;
 			}
 		break;
@@ -355,6 +377,7 @@ void State_CheckID_ ()
 			case 0x0 :
 				break ;
 			case 0x10 :  // กด 4 ตัว 4
+				ButtonMatrixState = 0;
 				STATE_Display = State_4_no4  ;
 				break ;
 			case 0x8 :
@@ -362,6 +385,10 @@ void State_CheckID_ ()
 				break ;
 			case 0x80 :
 				STATE_Display = State_2_no2 ;
+				break ;
+			default :
+				if(ButtonMatrixState == 0x8)
+				{STATE_Display = State_start ;}
 				break ;
 			}
 		break;
@@ -371,6 +398,7 @@ void State_CheckID_ ()
 			case 0x0 :
 				break ;
 			case 0x1000:  // กด 0 ตัว 5
+				ButtonMatrixState = 0;
 				STATE_Display = State_5_no0  ;
 				break ;
 			case 0x8 :
@@ -387,6 +415,7 @@ void State_CheckID_ ()
 			case 0x0 :
 				break ;
 			case 0x20 :  // กด 5 ตัว 6
+				ButtonMatrixState = 0;
 				STATE_Display = State_6_no5  ;
 				break ;
 			case 0x8 :
@@ -403,6 +432,7 @@ void State_CheckID_ ()
 			case 0x0 :
 				break ;
 			case 0x1000 :  // กด 0 ตัว 7
+				ButtonMatrixState = 0;
 				STATE_Display = State_7_no0  ;
 				break ;
 			case 0x8 :
@@ -419,6 +449,7 @@ void State_CheckID_ ()
 			case 0x0 :
 				break ;
 			case 0x1000 :  // กด 0 ตัว 8
+				ButtonMatrixState = 0;
 				STATE_Display = State_8_no0  ;
 				break ;
 			case 0x8 :
@@ -435,6 +466,7 @@ void State_CheckID_ ()
 			case 0x0 :
 				break ;
 			case 0x1000 :  // กด 0 ตัว 9
+				ButtonMatrixState = 0;
 				STATE_Display = State_9_no0  ;
 				break ;
 			case 0x8 :
@@ -451,6 +483,7 @@ void State_CheckID_ ()
 			case 0x0 :
 				break ;
 			case 0x100 :  // กด 1 ตัว 10
+				ButtonMatrixState = 0;
 				STATE_Display = State_10_no1  ;
 				break ;
 			case 0x8 :
@@ -467,6 +500,7 @@ void State_CheckID_ ()
 				case 0x0 :
 					break ;
 				case 0x100 :  // กด 1 ตัว 11
+					ButtonMatrixState = 0;
 					STATE_Display = State_11_no1  ;
 					break ;
 				case 0x8 :
@@ -478,10 +512,13 @@ void State_CheckID_ ()
 				}
 			break;
 			case State_11_no1 :
-				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
 				switch(ButtonMatrixState)
 				{
 				case 0x0 :
+					break ;
+				case 0x8000 :
+					HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+					STATE_Display = State_11_no1 ;
 					break ;
 				case 0x8 :
 					HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
