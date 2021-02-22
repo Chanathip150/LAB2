@@ -47,7 +47,8 @@ uint16_t ButtonMatrixState = 0 ;   //เก็บตัวที่รับค�
 enum StateDisplay
 {
 	State_start=0,
-	State_1_no6,State_2_no2,State_3_no3,State_4_no4,State_5_no0,State_6_no5,State_7_no0,State_8_no0,State_9_no0,State_10_no1,State_11_no1
+	State_1_no6,State_2_no2,State_3_no3,State_4_no4,State_5_no0,State_6_no5,State_7_no0,State_8_no0,State_9_no0,State_10_no1,State_11_no1,
+	State_Reset
 } ;
 
 /* USER CODE END PV */
@@ -324,8 +325,7 @@ void State_CheckID_ ()
 				STATE_Display = State_start ;
 				break ;
 			default :
-				if(ButtonMatrixState == 0x8)
-				{STATE_Display = State_start ;}
+				STATE_Display = State_Reset ;
 				break ;
 			}
 		break;
@@ -345,8 +345,7 @@ void State_CheckID_ ()
 				STATE_Display = State_start ;
 				break ;
 			default :
-				if(ButtonMatrixState == 0x8)
-				{STATE_Display = State_start ;}
+				STATE_Display = State_Reset ;
 				break ;
 			}
 		break;
@@ -366,8 +365,7 @@ void State_CheckID_ ()
 				STATE_Display = State_1_no6 ;
 				break ;
 			default :
-				if(ButtonMatrixState == 0x8)
-				{STATE_Display = State_start ;}
+				STATE_Display = State_Reset ;
 				break ;
 			}
 		break;
@@ -387,8 +385,7 @@ void State_CheckID_ ()
 				STATE_Display = State_2_no2 ;
 				break ;
 			default :
-				if(ButtonMatrixState == 0x8)
-				{STATE_Display = State_start ;}
+				STATE_Display = State_Reset ;
 				break ;
 			}
 		break;
@@ -407,6 +404,9 @@ void State_CheckID_ ()
 			case 0x80 :
 				STATE_Display = State_3_no3 ;
 				break ;
+			default :
+				STATE_Display = State_Reset ;
+				break ;
 			}
 		break;
 		case State_5_no0 :
@@ -423,6 +423,9 @@ void State_CheckID_ ()
 				break ;
 			case 0x80 :
 				STATE_Display = State_4_no4 ;
+				break ;
+			default :
+				STATE_Display = State_Reset ;
 				break ;
 			}
 		break;
@@ -441,6 +444,9 @@ void State_CheckID_ ()
 			case 0x80 :
 				STATE_Display = State_5_no0 ;
 				break ;
+			default :
+				STATE_Display = State_Reset ;
+				break ;
 			}
 		break;
 		case State_7_no0 :
@@ -457,6 +463,9 @@ void State_CheckID_ ()
 				break ;
 			case 0x80 :
 				STATE_Display = State_6_no5 ;
+				break ;
+			default :
+				STATE_Display = State_Reset ;
 				break ;
 			}
 		break;
@@ -475,6 +484,9 @@ void State_CheckID_ ()
 			case 0x80 :
 				STATE_Display = State_7_no0 ;
 				break ;
+			default :
+				STATE_Display = State_Reset ;
+				break ;
 			}
 		break;
 		case State_9_no0 :
@@ -491,6 +503,9 @@ void State_CheckID_ ()
 				break ;
 			case 0x80 :
 				STATE_Display = State_8_no0 ;
+				break ;
+			default :
+				STATE_Display = State_Reset ;
 				break ;
 			}
 			break;
@@ -509,6 +524,9 @@ void State_CheckID_ ()
 				case 0x80 :
 					STATE_Display = State_9_no0 ;
 					break ;
+				default :
+					STATE_Display = State_Reset ;
+					break ;
 				}
 			break;
 			case State_11_no1 :
@@ -526,6 +544,20 @@ void State_CheckID_ ()
 					break ;
 				}
 			break;
+			case State_Reset :
+
+				 switch(ButtonMatrixState)
+				 {
+				 case 0x0 :
+					 break ;
+				 case 0x8 :
+					 STATE_Display = State_start ;
+					 break ;
+				 default :
+					 STATE_Display = State_Reset ;
+					 break ;
+				 }
+			break ;
 	}
 }
 
